@@ -1,5 +1,6 @@
 /*
 	show the client's socket address 
+	use multi-thread
 	Author:jefby
 	Email:jef19906@gmail.com
 */
@@ -19,6 +20,7 @@ int main(int argc,char**argv)
 	char buff[MAXLINE];
 	time_t ticks;
 	int cli_len;
+	pid_t pid;
 	//创建一个网际套接字
 	listenfd = socket(AF_INET,SOCK_STREAM,0);
 	//清空数据
@@ -40,14 +42,20 @@ int main(int argc,char**argv)
 	{
 		//接受客户连接
 		connfd=accept(listenfd,(SA*)&cliaddr,&cli_len);
-		//将sin_addr转换成点分十进制字符串
-		inet_ntop(AF_INET,&cliaddr.sin_addr,client_addr,MAXLINE);
-		printf("client's address=%.100s:%d\r\n",client_addr,ntohs(cliaddr.sin_port));
-		ticks=time(NULL);
-		//最大输出24个字符
-		snprintf(buff,sizeof(buff),"%.24s\r\n",ctime(&ticks));
-		write(connfd,buff,strlen(buff));
-		close(connfd);
+		if((pid = fork())==0)//childpid 
+		{
+			close(listenfd);//关闭侦听
+			//将sin_addr转换成点分十进制字符串
+			inet_ntop(AF_INET,&cliaddr.sin_addr,client_addr,MAXLINE);
+			printf("client's address=%.100s:%d\r\n",client_addr,ntohs(cliaddr.sin_port));
+			ticks=time(NULL);
+			//最大输出24个字符
+			snprintf(buff,sizeof(buff),"%.24s\r\n",ctime(&ticks));
+			write(connfd,buff,strlen(buff));
+			close(connfd);
+			exit(0);//服务完成后结束进程
+		}
+		close(connfd);//父进程关闭已连接的套接字
 	}
 		
 }
