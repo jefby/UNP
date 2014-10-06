@@ -18,6 +18,7 @@ int main(int argc,char **argv)
 	char recvline[MAXLINE+1];
 	//套接字IPV4
 	SA	servaddr;
+	int cnt=0;
 	
 	if(argc != 2)
 	{
@@ -32,7 +33,7 @@ int main(int argc,char **argv)
 	
 	servaddr.sin_family = AF_INET;
 	//设置服务器端口；获取时间为熟知端口13
-	servaddr.sin_port = htons(13);
+	servaddr.sin_port = htons(9999);
 	//将命令行中的ascii码点分十进制IP地址转换为数值
 	if(inet_pton(AF_INET,argv[1],&servaddr.sin_addr) <= 0)
 	{
@@ -49,14 +50,16 @@ int main(int argc,char **argv)
 	while((n=read(sockfd,recvline,MAXLINE))>0)
 	{
 		recvline[n]=0;	//null terminate
+		++cnt;
 		if(fputs(recvline,stdout)==EOF)
 		{
 			printf("fputs error");
 			return -1;
 		}
 	}
+	printf("read num = %d\r\n",cnt);
 	//if n==0,closed the connect normally;else error
 	if(n < 0)
 		printf("read error");
-	exit(0);	
+	return(0);	
 }
