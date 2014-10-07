@@ -5,7 +5,7 @@
 static int read_cnt;
 static char * read_ptr;
 static char read_buf[MAXLINE];
-
+//主要是自己管理缓冲区,使用MAXLINE大小的缓冲区,一次读取这样大小的数据,然后每次从缓冲区中取得数据
 static ssize_t my_read(int fd,char *ptr)
 {
 	if(read_cnt <= 0)
@@ -13,7 +13,7 @@ static ssize_t my_read(int fd,char *ptr)
 		again:
 		if((read_cnt=read(fd,read_buf,sizeof(read_buf))) < 0)
 		{
-			if(errno == EINTR)
+			if(errno == EINTR) //重新调用read函数
 				goto again;//stall or interrupt by some signal
 			return -1;
 		}
