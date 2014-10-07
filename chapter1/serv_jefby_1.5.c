@@ -24,6 +24,10 @@ int main(int argc,char**argv)
 	int i = 0;
 	//创建一个网际套接字
 	listenfd = socket(AF_INET,SOCK_STREAM,0);
+	if(listenfd < 0 ){
+		printf("server socket function error\n");
+		return -1;
+	}
 	//清空数据
 	bzero(&servaddr,sizeof(servaddr));
 	servaddr.sin_family=AF_INET;

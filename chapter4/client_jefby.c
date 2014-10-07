@@ -47,7 +47,7 @@ int main(int argc,char **argv)
 	}
 	//len = sizeof(cliaddr) is very very import,can't be removed
 	len = sizeof(cliaddr);
-	//获取本地协议地址
+	//获取本地协议地址,将本地套接字保存在cliaddr上
 	if(0!=getsockname(sockfd,(SA*)&cliaddr,&len))
 		printf("getsockname error!\n");
 	//输出本地协议地址

@@ -55,7 +55,7 @@ int main(int argc,char**argv)
 			close(connfd);
 			exit(0);//服务完成后结束进程
 		}
-		close(connfd);//父进程关闭已连接的套接字
+		close(connfd);//父进程关闭已连接的套接字，如果不关闭，影响巨大，其1是父进程打开的文件描述符限制，其二是不能和新来更多的客户端建立连接。
 	}
 		
 }

@@ -44,6 +44,7 @@ int main(int argc,char **argv)
 	if(connect(sockfd,(SA*)&servaddr,sizeof(servaddr)) <0)
 	{
 		printf("connect error");
+		close(sockfd);
 		return -1;
 	}
 	//接收服务器传回的数据，返回0表示对端关闭连接，返回负值表示出错
