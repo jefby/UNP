@@ -1,5 +1,6 @@
 /*
 	show the client's socket address 
+	缺点是不能解析域名，一次只能处理一个连接
 	Author:jefby
 	Email:jef19906@gmail.com
 */
@@ -8,7 +9,7 @@
 #include <netinet/in.h>
 #include <time.h>
 
-#define MAXLINE 4096
+#define MAXLINE 256
 #define LISTENQ 1024
 #define SA struct sockaddr_in
 
@@ -34,13 +35,12 @@ int main(int argc,char**argv)
 	servaddr.sin_port=htons(13);
 	//将熟知端口绑定到套接字listenfd上
 	bind(listenfd,(SA*)&servaddr,sizeof(servaddr));
-	//将套接字转换成侦听套接字，LISTENQ定义了系统内核允许在这个监听
-	//描述符的最大客户连接数
+	//将套接字转换成侦听套接字，LISTENQ定义了系统内核允许在这个监听描述符的最大客户连接数
 	listen(listenfd,LISTENQ);
 	
 	while(1)
 	{
-		//接受客户连接
+		//接受客户连接,3次握手连接
 		connfd=accept(listenfd,(SA*)&cliaddr,&cli_len);
 		//将sin_addr转换成点分十进制字符串
 		inet_ntop(AF_INET,&cliaddr.sin_addr,client_addr,MAXLINE);
@@ -49,7 +49,7 @@ int main(int argc,char**argv)
 		//最大输出24个字符
 		snprintf(buff,sizeof(buff),"%.24s\r\n",ctime(&ticks));
 		write(connfd,buff,strlen(buff));
-		close(connfd);
+		close(connfd);//关闭连接，引发四次关闭
 	}
 		
 }

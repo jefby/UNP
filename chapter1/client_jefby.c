@@ -25,7 +25,7 @@ int main(int argc,char **argv)
 		printf("usage: a.out <IP address>");
 		exit(-1);
 	}
-	//创建一个网际字节流
+	//创建一个网际字节流，套接字用于TCP传输
 	if((sockfd=socket(AF_INET,SOCK_STREAM,0)) < 0)
 		printf("socket error");
 	//初始化为0
@@ -40,7 +40,7 @@ int main(int argc,char **argv)
 		printf("inet_pton error for %s",argv[1]);
 		return -1;
 	}
-	//客户端向服务器发出请求，建立连接	
+	//客户端向服务器发出请求，建立连接，三次握手过程
 	if(connect(sockfd,(SA*)&servaddr,sizeof(servaddr)) <0)
 	{
 		printf("connect error");

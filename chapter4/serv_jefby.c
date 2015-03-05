@@ -42,9 +42,10 @@ int main(int argc,char**argv)
 	{
 		//接受客户连接
 		connfd=accept(listenfd,(SA*)&cliaddr,&cli_len);
+		//开启子进程来服务用户一次可以同时处理多个连接请求,比第一章的实例能力强大了些，但是依然有限制，因为可以并发运行的进程是有限的
 		if((pid = fork())==0)//childpid 
 		{
-			close(listenfd);//关闭侦听
+			close(listenfd);//关闭子进程的侦听文件描述符
 			//将sin_addr转换成点分十进制字符串
 			inet_ntop(AF_INET,&cliaddr.sin_addr,client_addr,MAXLINE);
 			printf("client's address=%.100s:%d\r\n",client_addr,ntohs(cliaddr.sin_port));
